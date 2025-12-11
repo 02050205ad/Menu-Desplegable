@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Menú con Botones de Chequeo - Fondo GIF</title>
+<style>
+  /* fondo de pantalla animado */
+  :root{
+    --card-width: 300px;
+    --accent: #007bff;
+    --glass-bg: rgba(255,255,255,0.12);
+    --glass-border: rgba(255,255,255,0.18);
+    --panel-bg: rgba(255,255,255,0.9);
+    --shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  }
+
+  body{
+    /* URL de fondo solicitado por el usuario */
+    background-image: url("https://i.pinimg.com/originals/6b/66/32/6b663216955e50134bba3c796a4fc747.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:30px;
+  }
+
+  /* filtro para mejorar legibilidad sobre el GIF */
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.45));
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    width: var(--card-width);
+  }
+
+  .menu-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.9));
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.6);
+    backdrop-filter: blur(6px);
+  }
+
+  .menu-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: #111;
+    text-align: center;
+  }
+
+  /* toggle oculto (checkbox) */
+  .menu-toggle {
+    display: none;
+  }
+
+  .menu-label {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    cursor:pointer;
+    user-select:none;
+    padding:10px 12px;
+    border-radius:10px;
+    background: linear-gradient(90deg, var(--accent), #0056d6);
+    color:white;
+    font-weight:600;
+    transition: transform .12s ease, box-shadow .12s ease;
+    margin-bottom: 12px;
+  }
+  .menu-label:active{ transform: translateY(1px); }
+
+  .chev {
+    width:14px;
+    height:14px;
+    display:inline-block;
+    transform: rotate(0deg);
+    transition: transform .18s ease;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    margin-left:6px;
+    transform-origin:center;
+  }
+
+  /* contenido del menú oculto por defecto */
+  .menu-content {
+    display:none;
+    background: var(--panel-bg);
+    border-radius: 10px;
+    padding: 12px;
+    border: 1px solid var(--glass-border);
+  }
+
+  /* al abrir, mostrar y rotar la flecha */
+  .menu-toggle:checked + .menu-label .chev {
+    transform: rotate(135deg);
+  }
+  .menu-toggle:checked + .menu-label + .menu-content {
+    display:block;
+  }
+
+  /* estilos de las opciones con checkboxes */
+  .option {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-bottom:8px;
+    transition: background .12s ease;
+  }
+  .option:hover{
+    background: rgba(0,0,0,0.03);
+  }
+
+  .option input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    accent-color: var(--accent);
+    cursor:pointer;
+  }
+
+  .option-label {
+    font-size:15px;
+    color:#111;
+    user-select:none;
+  }
+
+  /* pie de tarjeta (instrucción pequeña) */
+  .note {
+    margin-top:10px;
+    font-size:12px;
+    color:#333;
+    text-align:center;
+    opacity:0.9;
+  }
+
+  /* responsive pequeño */
+  @media (max-width:360px){
+    :root{ --card-width: 92%; }
+  }
+</style>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <div class="container" role="region" aria-label="Menú con botones de chequeo">
+    <div class="menu-card">
+      <h1 class="menu-title">Menú de Opciones</h1>
+
+      <!-- Toggle para abrir/cerrar el menú -->
+      <input type="checkbox" id="menu-toggle" class="menu-toggle" />
+      <label for="menu-toggle" class="menu-label" aria-controls="menu-content" aria-expanded="false" onclick="toggleAria(event)">
+        Mostrar Opciones
+        <span class="chev" aria-hidden="true"></span>
+      </label>
+
+      <div id="menu-content" class="menu-content" role="group" aria-label="Opciones seleccionables">
+        <label class="option"><input type="checkbox" /> <span class="option-label">Opción 1: Información</span></label>
+        <label class="option"><input type="checkbox" /> <span class="option-label">Opción 2: Ajustes</span></label>
+        <label class="option"><input type="checkbox" /> <span class="option-label">Opción 3: Notificaciones</span></label>
+        <label class="option"><input type="checkbox" /> <span class="option-label">Opción 4: Ayuda</span></label>
+      </div>
+
+      <div class="note">Haz clic en "Mostrar Opciones" para desplegar el menú.</div>
+    </div>
+  </div>
+
+<script>
+  // Pequeña mejora de accesibilidad: actualizar aria-expanded cuando cambie el checkbox.
+  const toggle = document.getElementById('menu-toggle');
+  const label = document.querySelector('.menu-label');
+
+  function updateAria(){
+    const expanded = toggle.checked;
+    label.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    // también actualiza el atributo aria-expanded en el label (ya usado arriba)
+  }
+
+  // cuando el checkbox cambie (por teclado o clic), actualizamos aria-expanded
+  toggle.addEventListener('change', updateAria);
+
+  // al cargar la página, aseguramos atributo correcto
+  updateAria();
+
+  // función para evitar doble disparo de cambio de estado por el onclick del label en algunos navegadores
+  function toggleAria(e){
+    // espera micro-tick para que el checkbox ya haya cambiado su estado
+    setTimeout(updateAria, 1);
+  }
+</script>
+</body>
+</html>
